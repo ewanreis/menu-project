@@ -8,13 +8,14 @@ public class MenuScript : MonoBehaviour
 {
     private bool buttonAvailable = true, isCreepy = false;
     private int level = 1, pIsFullscreen, pGraphicsPreset;
-    private float pMasterVolume;
+    private float pMasterVolume, pMusicVolume, pVfxVolume;
 
-    public Slider volumeSlider;
+    public Slider masterSlider, musicSlider, vfxSlider;
     public GameObject settingsMenu, howToPlayScreen;
+    public Button continueButton, backButton;
 
     public AudioClip[] clips;
-    public AudioSource source;
+    public AudioSource musicSource, vfxSource;
     public AudioMixer audioMixer;
 
     enum Sounds
@@ -31,55 +32,78 @@ public class MenuScript : MonoBehaviour
         genericClick // 9
     }
 
-    void Start() 
+    void Start()
     {
-        Cursor.lockState = CursorLockMode.None;
-        pMasterVolume = PlayerPrefs.GetFloat("playerMasterVolume",0);
-        pIsFullscreen = PlayerPrefs.GetInt("playerFullscreen",0);
+        pMasterVolume = PlayerPrefs.GetFloat("playerMasterVolume", 0);
+        pMusicVolume = PlayerPrefs.GetFloat("playerMusicVolume", 0);
+        pVfxVolume = PlayerPrefs.GetFloat("playerVfxVolume", 0);
+        pIsFullscreen = PlayerPrefs.GetInt("playerFullscreen", 0);
+        audioMixer.SetFloat("masterVolume", pMasterVolume);
+        audioMixer.SetFloat("musicVolume", pMusicVolume);
+        audioMixer.SetFloat("vfxVolume", pVfxVolume);
+        masterSlider.value = pMasterVolume;
+        musicSlider.value = pMusicVolume;
+        vfxSlider.value = pVfxVolume;
         Screen.fullScreen = (pIsFullscreen == 0) ? false : true;
-        audioMixer.SetFloat("masterVolume",pMasterVolume);
-        volumeSlider.value = pMasterVolume;
+        Sounds music = (isCreepy) ? Sounds.menuMusicCreepy : Sounds.menuMusic;
+        Cursor.lockState = CursorLockMode.None;
         settingsMenu.SetActive(false);
         howToPlayScreen.SetActive(false);
-        Sounds music = (isCreepy) ? Sounds.menuMusicCreepy : Sounds.menuMusic;
-        source.PlayOneShot(clips[(int)music],0.2f);
+        musicSource.PlayOneShot(clips[(int)music], 0.2f);
+        PlayerPrefs.Save();
     }
 
-    public void ContinueGame() 
+    public void ContinueGame()
     {
+        Sounds buttonSound = (buttonAvailable) ? Sounds.continueClick : Sounds.clickDeny;
+        vfxSource.PlayOneShot(clips[(int)buttonSound]);
         if (buttonAvailable)
-        {
-            source.PlayOneShot(clips[(int)Sounds.continueClick]);
             Invoke("LoadScene", 1.5f);
-        }
-        else
-            source.PlayOneShot(clips[(int)Sounds.clickDeny]);
     }
 
-    public void StartGame() 
+    public void StartGame()
     {
         level = 2;
-        source.PlayOneShot(clips[(int)Sounds.startClick]);
+        vfxSource.PlayOneShot(clips[(int)Sounds.startClick]);
         Invoke("LoadScene", 1.5f);
     }
 
     public void QuitGame()
     {
-        source.PlayOneShot(clips[(int)Sounds.quitClick]);
+        vfxSource.PlayOneShot(clips[(int)Sounds.quitClick]);
         Invoke("EndGame", 1f);
+        PlayerPrefs.Save();
     }
 
-    public void SetVolume(float volume) 
+    public void SetVolumeMaster(float volume)  
     {
-        PlayerPrefs.SetFloat("playerMasterVolume", volume);
-        audioMixer.SetFloat("masterVolume",volume);
+        audioMixer.SetFloat("masterVolume", volume); 
+        PlayerPrefs.SetFloat("playerMasterVolume", volume); 
+    }
+
+    public void SetVolumeMusic(float volume)
+    {
+        audioMixer.SetFloat("musicVolume", volume);
+        PlayerPrefs.SetFloat("playerMusicVolume", volume);
+    }
+
+    public void SetVolumeVfx(float volume)
+    {
+        audioMixer.SetFloat("vfxVolume", volume);
+        PlayerPrefs.SetFloat("playerVfxVolume", volume);
+    }
+
+    public void ChangeMenuScreen(bool isMain)
+    {
+        Button selectedButton = (isMain) ? continueButton : backButton;
+        selectedButton.Select();
     }
 
     public void SetGraphicsPreset(int preset) => print(preset);
     public void SetFullscreen(bool isFullscreen) => Screen.fullScreen = isFullscreen;
-    public void ContinueHover() => source.PlayOneShot(clips[(buttonAvailable) ? (int)Sounds.continueHover : (int)Sounds.hoverDeny]);
-    public void StartHover() => source.PlayOneShot(clips[(int)Sounds.startHover]);
-    public void GenericClick() => source.PlayOneShot(clips[(int)Sounds.genericClick]);
+    public void ContinueHover() => vfxSource.PlayOneShot(clips[ (buttonAvailable) ? (int)Sounds.continueHover : (int)Sounds.hoverDeny ]);
+    public void StartHover() => vfxSource.PlayOneShot(clips[(int)Sounds.startHover]);
+    public void GenericClick() => vfxSource.PlayOneShot(clips[(int)Sounds.genericClick]);
 
     private void EndGame() => Application.Quit();
     private void LoadScene() => SceneManager.LoadScene(level); 
