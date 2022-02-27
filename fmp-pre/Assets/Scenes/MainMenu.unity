@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2116,7 +2116,7 @@ MonoBehaviour:
     m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 926637844}
-    m_SelectOnDown: {fileID: 1032467773}
+    m_SelectOnDown: {fileID: 1728072392}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -4911,8 +4911,8 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 926637844}
-    m_SelectOnDown: {fileID: 1032467773}
+    m_SelectOnUp: {fileID: 647412089}
+    m_SelectOnDown: {fileID: 2099667677}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -5427,7 +5427,7 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 926637844}
+    m_SelectOnUp: {fileID: 1728072392}
     m_SelectOnDown: {fileID: 1032467773}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
